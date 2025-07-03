@@ -1,0 +1,170 @@
+/* archives.css */
+.archives-container {
+    display: none;
+    flex: 1;
+    flex-direction: row;
+    background: var(--container-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.archives-container.active {
+    display: flex;
+}
+
+.archives-content {
+    width: 220px;
+    min-width: 220px;
+    background: var(--container-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.archives-content h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+#archives-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+#archives-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#archives-list::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 8px;
+}
+
+#archives-list::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 8px;
+}
+
+#archives-list::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+}
+
+.archive-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 12px;
+    border-radius: 12px;
+    background: var(--message-received-bg);
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.archive-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.archive-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--avatar-fallback-bg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--avatar-fallback-text);
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.archive-pic.has-image {
+    background-color: transparent;
+}
+
+.archive-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+    flex: 1;
+}
+
+.archive-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.restore-btn, .delete-btn {
+    padding: 8px 12px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+}
+
+.restore-btn:hover, .delete-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Sidebar de chat pour les archives */
+#archiveChatSidebar {
+    flex: 1;
+    background: var(--container-bg);
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    border-right: 1px solid var(--border-color);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#archiveChatSidebar.active {
+    display: flex;
+}
+
+#archiveChatSidebar.hidden {
+    display: none;
+}
+
+#archiveChatHeaderPic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--avatar-fallback-bg);
+    background-size: cover;
+    background-position: center;
+    border-left: 2px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--avatar-fallback-text);
+}
+
+#archiveChatHeaderPic.has-image {
+    background-color: transparent;
+}
+
+#archiveChatHeading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+}

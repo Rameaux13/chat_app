@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Meta tags for character encoding, viewport, and cache control -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Connexion - ChatApp</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind configuration with custom animations -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'gradient': 'gradient 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'slideUp': 'slideUp 0.6s ease-out',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        slideUp: {
+                            'from': { opacity: '0', transform: 'translateY(30px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        'pulse-glow': {
+                            'from': { 'box-shadow': '0 0 20px rgba(102, 126, 234, 0.3)' },
+                            'to': { 'box-shadow': '0 0 30px rgba(102, 126, 234, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom styles for gradients, glass effect, and loading spinner -->
+    <style>
+        /* Animated gradient background for light mode */
+        .bg-gradient-animated {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        /* Animated gradient background for dark mode */
+        .dark .bg-gradient-animated-dark {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        /* Glass effect for backdrop blur */
+        .glass-effect {
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+        }
+
+        /* Animation delay utility classes */
+        .float-delay-2 {
+            animation-delay: 2s !important;
+        }
+        .float-delay-4 {
+            animation-delay: 4s !important;
+        }
+
+        /* Loading spinner animation */
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-animated dark:bg-gradient-animated-dark transition-all duration-500 overflow-x-hidden">
+    <!-- Background particle effects for visual appeal -->
+    <div class="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full animate-float"></div>
+    <div class="absolute top-1/4 -left-8 w-24 h-24 bg-white/5 rounded-full animate-float float-delay-2"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-16 h-16 bg-white/10 rounded-full animate-float float-delay-4"></div>
+
+    <!-- Top navigation buttons -->
+    <div class="fixed top-6 left-6 right-6 flex justify-between items-center z-50">
+        <!-- Home button with hover and click animations -->
+        <button onclick="goToHome()" 
+                class="group bg-white/20 dark:bg-black/20 glass-effect border border-white/30 dark:border-white/10 text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all duration-300 px-4 py-2 rounded-full flex items-center gap-2 hover:scale-105 active:scale-95">
+            <svg class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span class="font-medium">Accueil</span>
+        </button>
+
+        <!-- Theme toggle button with rotation animation -->
+        <button onclick="toggleTheme()" 
+                class="group bg-white/20 dark:bg-black/20 glass-effect border border-white/30 dark:border-white/10 text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all duration-300 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-95">
+            <span class="text-xl group-hover:rotate-180 transition-transform duration-500">🌓</span>
+        </button>
+    </div>
+
+    <!-- Main content container -->
+    <div class="flex items-center justify-center min-h-screen p-6 sm:p-8">
+        <div class="w-full max-w-md animate-slideUp">
+            <!-- Login card with glass effect and shadow -->
+            <div class="bg-white/95 dark:bg-gray-900/95 glass-effect border border-white/20 dark:border-gray-700/50 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+                
+                <!-- Header with gradient and logo -->
+                <div class="bg-gradient-to-br from-[#667eea] to-[#764ba2] dark:from-[#1a1a2e] dark:to-[#0f3460] p-8 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/10"></div>
+                    <div class="relative z-10">
+                        <!-- Animated logo with floating effect -->
+                        <div class="mx-auto w-16 h-16 bg-white/20 glass-effect border-2 border-white/30 rounded-2xl flex items-center justify-center mb-4 animate-float">
+                            <span class="text-2xl">💬</span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-tight">ChatApp</h1>
+                        <p class="text-white/90 text-sm font-medium">Connectez-vous pour continuer</p>
+                    </div>
+                </div>
+
+                <!-- Login form -->
+                <form id="loginForm" class="p-6 sm:p-8 space-y-6">
+                    <!-- Email or phone input field -->
+                    <div class="space-y-2">
+                        <label for="emailPhone" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Email ou Téléphone
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   id="emailPhone" 
+                                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 outline-none"
+                                   placeholder="exemple@email.com ou +225 06 12 34 56 78"
+                                   required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password input field with toggle -->
+                    <div class="space-y-2">
+                        <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Mot de passe
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="password" 
+                                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 outline-none pr-12"
+                                   placeholder="Entrez votre mot de passe"
+                                   required>
+                            <button type="button" 
+                                    onclick="togglePassword()" 
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+                                <span id="passwordToggleIcon" class="text-lg">👁️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember me and forgot password options -->
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center space-x-2 cursor-pointer group">
+                            <input type="checkbox" 
+                                   id="rememberMe" 
+                                   class="w-4 h-4 text-indigo-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500 focus:ring-2">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium transition-colors duration-200">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+
+                    <!-- Submit button with gradient and animations -->
+                    <button type="submit" 
+                            id="loginBtn"
+                            class="w-full bg-gradient-to-r from-[#667eea] to-[#764ba2] dark:from-[#1a1a2e] dark:to-[#0f3460] hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 relative overflow-hidden animate-pulse-glow">
+                        <span id="loginBtnText">Se connecter</span>
+                    </button>
+
+                    <!-- Message display for errors or success -->
+                    <div id="message" class="text-center text-sm font-medium hidden"></div>
+
+                    <!-- Divider for alternative login options -->
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-4 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">ou continuez avec</span>
+                        </div>
+                    </div>
+
+                    <!-- Sign-up link -->
+                    <div class="text-center">
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">
+                            Vous n'êtes pas encore inscrit ?
+                            <a href="#" 
+                               onclick="goToSignup()" 
+                               class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-semibold transition-colors duration-200 ml-1">
+                                Créer un compte
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for theme management, form handling, and validations -->
+    <script>
+        // Toggle between light and dark themes
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                try {
+                    localStorage.setItem('theme', 'light');
+                } catch (e) {}
+            } else {
+                html.classList.add('dark');
+                try {
+                    localStorage.setItem('theme', 'dark');
+                } catch (e) {}
+            }
+        }
+
+        // Load saved theme or system preference
+        function loadTheme() {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else if (savedTheme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {}
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        // Redirect to home page
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Redirect to sign-up page
+        function goToSignup() {
+            window.location.href = 'formulaire.html';
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const identifier = document.getElementById('emailPhone').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const messageDiv = document.getElementById('message');
+            
+            if (!identifier || !password) {
+                showMessage('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+            
+            const data = { password };
+            if (/^[\+]?[0-9\s\-\(\)]+$/.test(identifier)) {
+                data.telephone = identifier.replace(/\s+/g, '');
+            } else {
+                data.email = identifier;
+            }
+            
+            // Show loading state
+            loginBtn.classList.add('loading-spinner', 'pointer-events-none');
+            loginBtnText.textContent = '';
+            messageDiv.classList.add('hidden');
+            
+            try {
+                const response = await fetch('http://localhost:400/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Connexion réussie !', 'success');
+                    console.log('Utilisateur connecté :', result);
+                    try {
+                        localStorage.setItem('currentUser', JSON.stringify(result));
+                    } catch (e) {
+                        console.warn('Impossible de sauvegarder les données utilisateur', e);
+                    }
+                    setTimeout(() => {
+                        window.location.href = 'utilisateur1.html';
+                    }, 1500);
+                } else {
+                    showMessage(result.message || 'Erreur de connexion', 'error');
+                }
+            } catch (error) {
+                showMessage('Erreur de connexion au serveur', 'error');
+                console.error('Erreur :', error);
+            } finally {
+                // Remove loading state
+                loginBtn.classList.remove('loading-spinner', 'pointer-events-none');
+                loginBtnText.textContent = 'Se connecter';
+            }
+        });
+
+        // Display error or success messages
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.classList.remove('hidden', 'text-red-500', 'text-green-500');
+            messageDiv.classList.add(type === 'error' ? 'text-red-500' : 'text-green-500');
+        }
+
+        // Real-time validation for email/phone input
+        document.getElementById('emailPhone').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const isEmail = value.includes('@');
+            const isPhone = /^[\+]?[0-9\s\-\(\)]+$/.test(value);
+            
+            if (value && !isEmail && !isPhone) {
+                e.target.classList.add('border-red-500', 'focus:ring-red-500');
+                e.target.classList.remove('border-gray-200', 'dark:border-gray-700', 'focus:ring-indigo-500');
+            } else {
+                e.target.classList.remove('border-red-500', 'focus:ring-red-500');
+                e.target.classList.add('border-gray-200', 'dark:border-gray-700', 'focus:ring-indigo-500');
+            }
+        });
+
+        // Initialize theme on page load
+        window.addEventListener('load', function() {
+            loadTheme();
+        });
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                try {
+                    if (!localStorage.getItem('theme')) {
+                        document.documentElement.classList.toggle('dark', e.matches);
+                    }
+                } catch (err) {}
+            });
+        }
+    </script>
+</body>
+</html> 

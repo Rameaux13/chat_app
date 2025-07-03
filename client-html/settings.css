@@ -1,0 +1,458 @@
+/* settings.css - Disposition en deux colonnes avec tailles agrandies et palette personnalisée */
+:root {
+    --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    --container-bg: #ffffff;
+    --text-color: #1e293b;
+    --secondary-text: #64748b;
+    --input-bg: rgba(248 250 252 / 80%);
+    --input-border: rgba(59 130 246 / 20%);
+    --input-focus-bg: #ffffff;
+    --border-color: rgba(226 232 240 / 80%);
+    --accent-color: #4f46e5;
+    --accent-gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+    --shadow: rgba(0 0 0 / 8%);
+    --scrollbar-thumb: rgba(59 130 246 / 30%);
+    --scrollbar-hover: rgba(59 130 246 / 50%);
+    --scrollbar-track: rgba(241 245 249 / 50%);
+    --empty-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --success-color: #22c55e;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --message-sent-bg: linear-gradient(135deg, #4f46e5, #7c3aed);
+    --message-received-bg: #f1f5f9;
+    --avatar-fallback-bg: #e2e8f0;
+    --avatar-fallback-text: #1e293b;
+}
+
+[data-theme="dark"] {
+    --bg-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --container-bg: #1e293b;
+    --text-color: #f1f5f9;
+    --secondary-text: #94a3b8;
+    --input-bg: rgba(30 41 59 / 80%);
+    --input-border: rgba(59 130 246 / 30%);
+    --input-focus-bg: #334155;
+    --border-color: rgba(71 85 105 / 50%);
+    --accent-color: #60a5fa;
+    --accent-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+    --shadow: rgba(0 0 0 / 50%);
+    --scrollbar-thumb: rgba(96 165 250 / 40%);
+    --scrollbar-hover: rgba(96 165 250 / 60%);
+    --scrollbar-track: rgba(51 65 85 / 50%);
+    --empty-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --success-color: #4ade80;
+    --error-color: #f87171;
+    --warning-color: #facc15;
+    --message-sent-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+    --message-received-bg: rgba(71 85 105 / 30%);
+    --avatar-fallback-bg: #334155;
+    --avatar-fallback-text: #f1f5f9;
+}
+
+.settings-container {
+    display: none;
+    flex: 1;
+    background: var(--container-bg);
+    position: relative;
+    overflow: auto;
+    min-height: 100vh;
+}
+
+.settings-container.active {
+    display: flex;
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.settings-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.settings-content h2 {
+    font-size: 32px;
+    font-weight: 800;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.info-section {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.info-section:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.info-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-section h3::before {
+    content: '⚙️';
+    font-size: 20px;
+}
+
+.profile-pic-section {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.profile-pic-section:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.profile-pic-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-pic-section h3::before {
+    content: '👤';
+    font-size: 20px;
+}
+
+.profile-pic-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    background: var(--avatar-fallback-bg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--avatar-fallback-text);
+    text-transform: uppercase;
+    margin: 0 auto 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.profile-pic-container:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px var(--shadow);
+}
+
+.profile-pic-container.has-image {
+    background: transparent;
+    color: transparent;
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-pic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.file-input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 0.8;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.file-input-label:hover {
+    color: var(--accent-color);
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-file-input + .file-input-label::before {
+    content: '📸 Choisir une photo';
+    display: inline-block;
+    padding: 10px 16px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.custom-file-input + .file-input-label:hover::before {
+    background: var(--input-focus-bg);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    box-shadow: 0 4px 10px var(--shadow);
+}
+
+.update-pic-btn {
+    padding: 10px 20px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+    width: 100%;
+    max-width: 180px;
+}
+
+.update-pic-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.update-pic-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.update-pic-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    padding: 10px 16px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    font-size: 14px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--accent-color);
+    background: var(--input-focus-bg);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--input-border);
+}
+
+.form-group input::placeholder {
+    color: var(--secondary-text);
+}
+
+.save-btn {
+    padding: 10px 20px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.save-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.confirmation-message {
+    padding: 12px 20px;
+    background: var(--success-color);
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px var(--shadow);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.error {
+    color: var(--error-color);
+    font-size: 12px;
+    margin-top: 4px;
+    padding: 6px 10px;
+    background: rgba(239 68 68 / 10%);
+    border-radius: 6px;
+    border-left: 2px solid var(--error-color);
+    animation: fadeIn 0.3s ease;
+}
+
+.error.hidden {
+    display: none;
+}
+
+.cta-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cta-button {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px var(--shadow);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings-content {
+        padding: 20px;
+        max-width: 100%;
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .info-section,
+    .profile-pic-section {
+        padding: 16px;
+    }
+    
+    .profile-pic-container {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+        border-radius: 16px;
+    }
+    
+    .settings-content h2 {
+        font-size: 28px;
+    }
+    
+    .update-pic-btn,
+    .save-btn {
+        max-width: 160px;
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+    
+    .info-section h3,
+    .profile-pic-section h3 {
+        font-size: 16px;
+    }
+    
+    .form-group input {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-content {
+        padding: 16px;
+        gap: 16px;
+    }
+    
+    .profile-pic-container {
+        width: 70px;
+        height: 70px;
+        font-size: 26px;
+        border-radius: 12px;
+    }
+    
+    .settings-content h2 {
+        font-size: 24px;
+    }
+    
+    .update-pic-btn,
+    .save-btn {
+        max-width: 140px;
+        font-size: 11px;
+        padding: 8px 14px;
+    }
+    
+    .info-section h3,
+    .profile-pic-section h3 {
+        font-size: 14px;
+    }
+    
+    .form-group input {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}

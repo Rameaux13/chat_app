@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 ChatApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="rooms.css">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation et interactions -->
+        <nav class="vertical-nav" aria-label="Navigation principale">
+            <div class="user-profile" role="button" aria-label="Profil utilisateur">
+                <div class="profile-pic-placeholder" id="userProfilePic" aria-hidden="true"></div>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active" data-section="welcome" role="button" aria-current="page">
+                    <span class="nav-icon" aria-hidden="true">🏠</span>
+                    <span class="nav-item-label">Accueil</span>
+                </li>
+                <li class="nav-item" data-section="discussions" role="button">
+                    <span class="nav-icon" aria-hidden="true">💬</span>
+                    <span class="nav-item-label">Chat</span>
+                </li>
+                <li class="nav-item" data-section="rooms" role="button">
+                    <span class="nav-icon" aria-hidden="true">👥</span>
+                    <span class="nav-item-label">Salles</span>
+                </li>
+                <li class="nav-item" data-section="settings" role="button">
+                    <span class="nav-icon" aria-hidden="true">⚙️</span>
+                    <span class="nav-item-label">Paramètres</span>
+                </li>
+                <li>
+                    <button class="theme-toggle" aria-label="Changer de thème">☀️</button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Section de bienvenue -->
+        <section id="welcome-section" class="section active" aria-labelledby="welcome-heading">
+            <div class="welcome-content">
+                <h1 class="app-title" id="welcome-heading">ChatApp</h1>
+                <div class="welcome-icon" aria-hidden="true">💬</div>
+                <h2>Débutez une conversation</h2>
+                <p>Connectez-vous avec vos amis, rejoignez des discussions ou personnalisez vos paramètres.</p>
+            </div>
+        </section>
+
+        <!-- Section des discussions -->
+        <div class="discussions-container">
+            <aside class="users-sidebar hidden" id="usersSidebar" aria-labelledby="users-heading">
+                <div class="sidebar-header">
+                    <h2 id="users-heading">Conversations</h2>
+                </div>
+                <input type="text" id="usersSearch" placeholder="Rechercher..." aria-label="Rechercher une conversation">
+                <div id="users-list" class="users-list">Chargement des conversations...</div>
+            </aside>
+            <aside class="chat-sidebar hidden" id="chatSidebar" aria-labelledby="chat-heading">
+                <div class="sidebar-header">
+                    <div class="chat-header-left">
+                        <div id="chatHeaderPic" class="profile-pic-placeholder"></div>
+                        <h2 id="chat-heading">Chat</h2>
+                    </div>
+                    <div class="chat-header-actions">
+                        <button class="chat-header-profile-btn" id="openProfileSidebar" aria-label="Ouvrir le profil" disabled>👤</button>
+                    </div>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <form id="chat-form" style="display: none;">
+                        <span class="sticker-icon" id="stickerBtn" role="button" aria-label="Ouvrir les stickers">😊</span>
+                        <input type="text" id="chat-input" placeholder="Votre message..." aria-label="Message" disabled>
+                        <button type="submit">➤</button>
+                    </form>
+                    <div id="stickerPicker" class="sticker-picker hidden">
+                        <div id="stickerList" class="sticker-list"></div>
+                    </div>
+                </div>
+            </aside>
+            <aside class="profile-sidebar hidden" id="profileSidebar" aria-labelledby="profile-heading">
+                <div class="sidebar-header">
+                    <h2 id="profile-heading">Profil</h2>
+                    <button class="close-sidebar" id="closeProfileSidebar" aria-label="Fermer le profil">✖</button>
+                </div>
+                <div id="profileDetailsPic" class="profile-pic-placeholder"></div>
+                <div id="profileDetailsName"></div>
+                <div id="profileDetailsEmail"></div>
+                <div id="profileDetailsInfo"></div>
+                <div class="action-buttons">
+                    <button id="blockUserBtn">🚫 Bloquer l'utilisateur</button>
+                    <button id="unblockUserBtn" style="display: none;">🔓 Débloquer l'utilisateur</button>
+                    <button id="reportUserBtn">⚠️ Signaler l'utilisateur</button>
+                    <div id="reportForm" class="report-form hidden">
+                        <textarea id="reportReason" placeholder="Entrez la raison du signalement..." aria-label="Raison du signalement"></textarea>
+                        <div class="report-form-actions">
+                            <button id="submitReportBtn">Envoyer</button>
+                            <button id="cancelReportBtn">Annuler</button>
+                        </div>
+                    </div>
+                    <button id="deleteConversationBtn">🗑️ Supprimer la discussion</button>
+                </div>
+            </aside>
+        </div>
+
+      
+    <!-- Section des salles -->
+<div class="rooms-container">
+    <aside class="rooms-sidebar hidden" id="roomsSidebar" aria-labelledby="rooms-heading">
+        <div class="sidebar-header">
+            <h2 id="rooms-heading">Salles</h2>
+        </div>
+        <div class="rooms-search-container">
+            <input type="text" id="roomsSearch" placeholder="Rechercher une salle..." aria-label="Rechercher une salle">
+            <button id="createRoomBtn" class="cta-button">Créer une salle</button>
+        </div>
+        <div id="rooms-list" class="rooms-list">Chargement des salles...</div>
+    </aside>
+    <aside class="room-chat-sidebar hidden" id="roomChatSidebar" aria-labelledby="room-chat-heading">
+        <div class="sidebar-header">
+            <div class="chat-header-left">
+                <h2 id="room-chat-heading">Salle</h2>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-profile-btn" id="openRoomProfileSidebar" aria-label="Ouvrir le profil de la salle">ℹ️</button>
+            </div>
+        </div>
+        <div id="room-chat-messages" class="chat-messages"></div>
+        <div class="chat-input-container">
+            <form id="room-chat-form" style="display: none;">
+                <span class="sticker-icon" id="roomStickerBtn" role="button" aria-label="Ouvrir les stickers">😊</span>
+                <input type="text" id="room-chat-input" placeholder="Votre message..." aria-label="Message" disabled>
+                <button type="submit">➤</button>
+            </form>
+            <div id="roomStickerPicker" class="sticker-picker hidden">
+                <div id="roomStickerList" class="sticker-list"></div>
+            </div>
+        </div>
+    </aside>
+    <!-- Modale pour créer une salle -->
+    <div id="createRoomModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Créer une nouvelle salle</h2>
+            <form id="createRoomForm">
+                <label for="roomNameInput">Nom de la salle :</label>
+                <input type="text" id="roomNameInput" required>
+                <label for="roomDescriptionInput">Description :</label>
+                <textarea id="roomDescriptionInput"></textarea>
+                <div class="modal-actions">
+                    <button type="submit">Créer</button>
+                    <button type="button" id="cancelRoomBtn">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+ <aside class="room-profile-sidebar hidden" id="roomProfileSidebar" aria-labelledby="room-profile-heading">
+        <div class="sidebar-header">
+            <h2 id="room-profile-heading">Profil de la salle</h2>
+            <button class="close-sidebar" id="closeRoomProfileSidebar" aria-label="Fermer le profil">✖</button>
+        </div>
+        <div id="roomDetailsName"></div>
+        <div id="roomDetailsDescription"></div>
+        <div id="roomDetailsCreator"></div>
+        <div id="roomDetailsMembers"></div>
+        <div class="room-profile-actions">
+            <button id="joinRoomBtn">➕ Rejoindre la salle</button>
+            <button id="leaveRoomBtn">➖ Quitter la salle</button>
+            <button id="reportRoomBtn">⚠️ Signaler la salle</button>
+            <div id="reportRoomForm" class="report-form hidden">
+            <textarea id="reportReasonRoom" placeholder="Entrez la raison du signalement..." aria-label="Raison du signalement"></textarea>
+            <div class="report-form-actions">
+                <button id="submitReportRoomBtn">Envoyer</button>
+                <button id="cancelReportBtn">Annuler</button>
+            </div>
+        </div>
+            <button id="deleteRoomBtn">🗑️ Supprimer la salle</button>
+        </div>
+    </aside>
+
+        <!-- Section des paramètres -->
+        <!-- Section des paramètres -->
+<div class="settings-container">
+    <section id="settings-section" class="section hidden" aria-labelledby="settings-heading">
+        <div class="settings-content">
+            <h2 id="settings-heading">Paramètres</h2>
+            <!-- Le contenu sera généré dynamiquement par parametre.js -->
+        </div>
+    </section>
+</div>
+</div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

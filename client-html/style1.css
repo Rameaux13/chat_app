@@ -1,0 +1,245 @@
+
+
+/* Première sidebar : Liste des salles */
+.rooms-sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--container-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: absolute;
+    right: 100px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 20px var(--shadow);
+}
+
+.rooms-sidebar.active {
+    transform: translateX(0);
+}
+
+.rooms-sidebar.fixed {
+    transform: none;
+    position: relative;
+    z-index: 1;
+}
+
+.rooms-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#roomsSearch {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 2px solid var(--border-color);
+    border-radius: 25px;
+    background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2364748b" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 1 1 11 0z"/></svg>') no-repeat 14px center;
+    background-size: 18px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#roomsSearch:focus {
+    border-color: var(--accent-color);
+    background-color: var(--input-focus-bg);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--accent-color), 0.1);
+}
+
+#createRoomBtn {
+    padding: 12px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#createRoomBtn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(var(--accent-color), 0.3);
+}
+
+.rooms-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.room-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 12px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    border-left: 1px solid transparent;
+}
+
+.room-item:hover {
+    background: var(--message-received-bg);
+    transform: translateX(3px);
+    border-left: 2px solid var(--accent-color);
+}
+
+.room-item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Deuxième sidebar : Messages de la salle */
+.room-chat-sidebar {
+    flex: 10;
+    background-color: var(--container-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.room-chat-sidebar.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.room-chat-sidebar.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.room-chat-sidebar.with-profile {
+    flex: 1.5;
+    transition: all 0.3s ease;
+}
+
+/* Troisième sidebar : Profil de la salle */
+.room-profile-sidebar {
+    width: 300px;
+    min-width: 300px;
+    background: var(--container-bg);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 3;
+    box-shadow: -4px 0 20px var(--shadow);
+}
+
+.room-profile-sidebar.active {
+    transform: translateX(0);
+}
+
+.room-profile-sidebar.hidden {
+    transform: translateX(100%);
+}
+
+#roomDetailsName {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#roomDetailsDescription {
+    font-size: 14px;
+    color: var(--secondary-text);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#roomDetailsCreator {
+    font-size: 14px;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#roomDetailsMembers {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.room-profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.room-profile-actions button {
+    padding: 12px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.room-profile-actions button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(var(--accent-color), 0.3);
+}
+
+.room-profile-actions #blockRoomBtn {
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+}
+
+.room-profile-actions #reportRoomBtn {
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+}
+
+.room-profile-actions #deleteRoomBtn {
+    background: linear-gradient(135deg, #374151, #4b5563);
+}
+
+.room-profile-actions #archiveRoomBtn {
+    background: var(--accent-gradient);
+}
+
+.room-profile-actions #joinRoomBtn {
+    background: linear-gradient(135deg, var(--success-color), #16a34a);
+}
+
+.room-profile-actions #leaveRoomBtn {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+}

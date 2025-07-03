@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 ChatApp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style1.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation -->
+        <nav class="vertical-nav" aria-label="Navigation principale">
+            <div class="user-profile" role="button" aria-label="Profil utilisateur">
+                <div class="profile-pic-placeholder" id="userProfilePic" aria-hidden="true"></div>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active" data-section="welcome" role="button" aria-current="page">
+                    <span class="nav-icon" aria-hidden="true">🏠</span>
+                    <span class="nav-item-label">Accueil</span>
+                </li>
+                <li class="nav-item" data-section="discussions" role="button">
+                    <span class="nav-icon" aria-hidden="true">💬</span>
+                    <span class="nav-item-label">Chat</span>
+                </li>
+                <li class="nav-item" data-section="rooms" role="button">
+                    <span class="nav-icon" aria-hidden="true">👥</span>
+                    <span class="nav-item-label">Salles</span>
+                </li>
+                <li class="nav-item" data-section="archives" role="button">
+                    <span class="nav-icon" aria-hidden="true">📁</span>
+                    <span class="nav-item-label">Archives</span>
+                </li>
+                <li class="nav-item" data-section="settings" role="button">
+                    <span class="nav-icon" aria-hidden="true">⚙️</span>
+                    <span class="nav-item-label">Paramètres</span>
+                </li>
+                <li>
+                    <button class="theme-toggle" aria-label="Changer de thème">☀️</button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area" id="contentArea">
+            <!-- Première sidebar : Liste des utilisateurs -->
+            <aside class="users-sidebar" id="usersSidebar" aria-labelledby="users-heading">
+                <div class="sidebar-header">
+                    <h2 id="users-heading">Conversations</h2>
+                </div>
+                <input type="text" id="usersSearch" placeholder="Rechercher..." aria-label="Rechercher une conversation">
+                <div id="users-list" class="users-list">Chargement des conversations...</div>
+            </aside>
+
+            <!-- Deuxième sidebar : Conversation -->
+            <aside class="chat-sidebar hidden" id="chatSidebar" aria-labelledby="chat-heading">
+                <div class="sidebar-header">
+                    <div class="chat-header-left">
+                        <div id="chatHeaderPic" class="profile-pic-placeholder"></div>
+                        <h2 id="chat-heading">Chat</h2>
+                    </div>
+                    <div class="chat-header-actions">
+                        <button class="chat-header-profile-btn" id="openProfileSidebar" aria-label="Ouvrir le profil" disabled>👤</button>
+                    </div>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <form id="chat-form" style="display: none;">
+                        <span class="sticker-icon" id="stickerBtn" role="button" aria-label="Ouvrir les stickers">😊</span>
+                        <input type="text" id="chat-input" placeholder="Votre message..." aria-label="Message" disabled>
+                        <button type="submit">➤</button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Troisième sidebar : Profil utilisateur -->
+            <aside class="profile-sidebar hidden" id="profileSidebar" aria-labelledby="profile-heading">
+                <div class="sidebar-header">
+                    <h2 id="profile-heading">Profil</h2>
+                    <button class="close-sidebar" id="closeProfileSidebar" aria-label="Fermer le profil">✖</button>
+                </div>
+                <div id="profileDetailsPic" class="profile-pic-placeholder"></div>
+                <div id="profileDetailsName"></div>
+                <div id="profileDetailsEmail"></div>
+                <div id="profileDetailsInfo"></div>
+                <div class="profile-actions">
+                    <button id="blockUserBtn">🚫 Bloquer l'utilisateur</button>
+                    <button id="reportUserBtn">⚠️ Signaler l'utilisateur</button>
+                    <button id="deleteConversationBtn">🗑️ Supprimer la discussion</button>
+                    <button id="archiveConversationBtn">📁 Archiver la discussion</button>
+                </div>
+            </aside>
+
+            <!-- Première sidebar pour les salles -->
+            <aside class="rooms-sidebar hidden" id="roomsSidebar" aria-labelledby="rooms-heading">
+                <div class="sidebar-header">
+                    <h2 id="rooms-heading">Salles</h2>
+                </div>
+                <div class="rooms-search-container">
+                    <input type="text" id="roomsSearch" placeholder="Rechercher une salle..." aria-label="Rechercher une salle">
+                    <button id="createRoomBtn" class="cta-button">Créer une salle</button>
+                </div>
+                <div id="rooms-list" class="rooms-list">Chargement des salles...</div>
+            </aside>
+
+            <!-- Deuxième sidebar : Messages de la salle -->
+            <aside class="room-chat-sidebar hidden" id="roomChatSidebar" aria-labelledby="room-chat-heading">
+                <div class="sidebar-header">
+                    <div class="chat-header-left">
+                        <h2 id="room-chat-heading">Salle</h2>
+                    </div>
+                    <div class="chat-header-actions">
+                        <button class="chat-header-profile-btn" id="openRoomProfileSidebar" aria-label="Ouvrir le profil de la salle">ℹ️</button>
+                    </div>
+                </div>
+                <div id="room-chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <form id="room-chat-form" style="display: none;">
+                        <span class="sticker-icon" id="roomStickerBtn" role="button" aria-label="Ouvrir les stickers">😊</span>
+                        <input type="text" id="room-chat-input" placeholder="Votre message..." aria-label="Message" disabled>
+                        <button type="submit">➤</button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Troisième sidebar : Profil de la salle -->
+            <aside class="room-profile-sidebar hidden" id="roomProfileSidebar" aria-labelledby="room-profile-heading">
+                <div class="sidebar-header">
+                    <h2 id="room-profile-heading">Profil de la salle</h2>
+                    <button class="close-sidebar" id="closeRoomProfileSidebar" aria-label="Fermer le profil">✖</button>
+                </div>
+                <div id="roomDetailsName"></div>
+                <div id="roomDetailsDescription"></div>
+                <div id="roomDetailsCreator"></div>
+                <div id="roomDetailsMembers"></div>
+                <div class="room-profile-actions">
+                    <button id="joinRoomBtn">➕ Rejoindre la salle</button>
+                    <button id="leaveRoomBtn">➖ Quitter la salle</button>
+                    <button id="blockRoomBtn">🚫 Bloquer la salle</button>
+                    <button id="reportRoomBtn">⚠️ Signaler la salle</button>
+                    <button id="archiveRoomBtn">📁 Archiver la salle</button>
+                    <button id="deleteRoomBtn">🗑️ Supprimer la salle</button>
+                </div>
+            </aside>
+
+            <!-- Contenu principal -->
+            <section id="welcome-section" class="section active" aria-labelledby="welcome-heading">
+                <div class="welcome-content">
+                    <h1 class="app-title" id="welcome-heading">ChatApp</h1>
+                    <div class="welcome-icon" aria-hidden="true">💬</div>
+                    <h2>Débutez une conversation</h2>
+                    <p>Connectez-vous avec vos amis, rejoignez des discussions ou personnalisez vos paramètres.</p>
+                </div>
+            </section>
+
+            
+            <section id="discussions-section" class="section hidden" aria-labelledby="discussions-heading">
+                <div class="discussions-content">
+                    <!-- <h2 id="discussions-heading">Discussions</h2> -->
+                    <!-- <p>Sélectionnez une conversation dans la liste pour commencer à discuter.</p> -->
+                </div>
+            </section>
+            <section id="rooms-section" class="section hidden" aria-labelledby="rooms-heading">
+                <div class="rooms-content">
+                    <!-- <h2 id="rooms-heading">Salles</h2> -->
+                    <!-- <p>Rejoignez ou créez une salle pour discuter avec plusieurs personnes.</p> -->
+                </div>
+            </section>
+            <section id="archives-section" class="section hidden" aria-labelledby="archives-heading">
+                <div class="archives-content">
+                    <h2 id="archives-heading">Archives</h2>
+                    <div id="archives-list"></div>
+                </div>
+            </section>
+            <section id="settings-section" class="section hidden" aria-labelledby="settings-heading">
+                <div class="settings-content">
+                    <h2 id="settings-heading">Paramètres</h2>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
