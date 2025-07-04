@@ -2,11 +2,14 @@ const mysql = require('mysql2');
 
 // Crée la connexion à la base de données
 const db = mysql.createConnection({
-  host: 'localhost',        // ou l'adresse de ton serveur
-  user: 'root',             // ton utilisateur MySQL
-  password: '',             // ton mot de passe MySQL
-  database: 'chat_app'      // le nom de ta base de données
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  multipleStatements: true,
+  port: process.env.DB_PORT || 3306,
 });
+
 
 // Connexion à la base
 db.connect((err) => {
