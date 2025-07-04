@@ -965,8 +965,7 @@ io.on('connection', socket => {
     }
   });
 });
-
-const PORT = 400;
+const PORT = process.env.PORT || 4000;  // Utilise le port fourni par Railway, sinon 4000 en local
 server.listen(PORT, () => {
-  console.log(`✅ Serveur Node.js avec Socket.IO lancé sur http://localhost:${PORT}`);
+  console.log(`✅ Serveur Node.js avec Socket.IO lancé sur le port ${PORT}`);
 });
